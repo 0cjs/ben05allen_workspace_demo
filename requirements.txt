@@ -1,0 +1,7 @@
+#   This hardcodes what goes in this top-level virtualenv, but if
+#   you really wanted it to install all packages '*' matching
+#   packages/*/pyproject.toml, the Test script can easily generate
+#   this file.
+
+-e ./packages/lib/
+-e ./packages/pkg-a/

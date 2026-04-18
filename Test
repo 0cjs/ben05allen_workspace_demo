@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#   See README.md for details.
+set -Eeuo pipefail
+trap 'ec=$?; echo 1>&2 "ERROR: ec=$ec line=$LINENO cmd=$BASH_COMMAND";
+    exit $ec;' ERR
+
+####################################################################
+
+export PROJDIR=$(command cd $(dirname "$0") && pwd -P)
+
+#   Simple hack to have initial -c option rebuild virtualenv.
+[[ $# -gt 0 && $1 = '-c' ]] && {
+    shift; echo '────── Cleaning'; rm -rf "$PROJDIR/.build/virtualenv"; }
+
+echo '━━━━━ Top-level virtual environment'
+source "$PROJDIR"/pactivate -q
+
+echo "OK"

@@ -1,0 +1,2 @@
+#   Build products; `rm -r` this to do a fully clean build.
+/.build/
