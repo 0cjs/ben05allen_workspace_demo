@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+#   See README.md for details.
+set -Eeuo pipefail
+trap 'ec=$?; echo 1>&2 "ERROR: ec=$ec line=$LINENO cmd=$BASH_COMMAND";
+    exit $ec;' ERR
+
+####################################################################
+
+die() { local ec=$1; shift; echo 'ERROR:' "$@"; exit $ec; }
+
+find_uv() {
+    #   Search a few places for `uv` for those of us who don't have it in
+    #   our paths. (The ~/.pyvirtenv/ version is for `pae` users who have
+    #   installed it into a common virtualenv named `uv`; something similar
+    #   should probably be added for `pipx` users, if we have any.)
+    declare -g uv
+    for uv in \
+        ~/.pyvirtenv/uv/.build/virtualenv/bin/uv \
+        ~/.local/bin/uv \
+        uv \
+    ; do
+        [[ -x $uv ]] && break
+    done
+    return 0
+}
+
+#   Our "test" is just to list the packages in the virtualenv.
+#   (The leading spaces just make it easier to see the section separators.)
+piplist() {
+    local pkgdir="$1"; shift
+    "$pkgdir"/.build/virtualenv/bin/pip list | sed 's/^/    /'
+}
+
+####################################################################
+
+export PROJDIR=$(command cd $(dirname "$0") && pwd -P)
+find_uv; $uv --version >/dev/null \
+    || die 3 '`uv` not found: please install or activate it'
+
+#   Simple hack to have initial -c option rebuild virtualenv.
+[[ $# -gt 0 && $1 = '-c' ]] && {
+    shift
+    echo '────── Cleaning'
+    die 99 'XXX write me'
+}
+
+echo '━━━━━ Top-level virtual environment'
+$uv run python --version
+die 99 'XXX write me'
+
+echo '━━━━━ project/* virtual environments'
+for pkgdir in $PROJDIR/packages/*/pyproject.toml; do
+    pkgdir="$(dirname "$pkgdir")"
+    echo "─────  ${pkgdir#$PROJDIR/}"
+    die 99 'XXX write me'
+done
+
+echo "OK"
