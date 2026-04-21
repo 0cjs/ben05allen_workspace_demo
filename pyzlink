@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#   Quick hack to set up this project to use pythonz-supplied Python 3.14.
+set -Eeuo pipefail
+
+export PROJDIR=$(command cd $(dirname "$0") && pwd -P)
+
+for i in "$PROJDIR" "$PROJDIR"/packages/*/requirements.txt; do
+    i=${i%/requirements.txt}
+    echo "───── $i"
+    (cd "$i" && rm -f .python && ln -s $(pythonz locate 3.14.4) .python)
+done
