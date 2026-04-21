@@ -19,7 +19,7 @@ piplist() {
 export PROJDIR=$(command cd $(dirname "$0") && pwd -P)
 
 #   Simple hack to have initial -c option rebuild virtualenv.
-[[ $# -gt 0 && $1 = '-c' ]] && {
+[[ $# -gt 0 && $1 = -[Cc] ]] && {
     shift
     echo '────── Cleaning'
     rm -rf "$PROJDIR"/.build/virtualenv/ \
